@@ -1,0 +1,36 @@
+pandas
+scikit-learn
+jupyterlab
+numpy
+
+#pip install -r requirements.txt
+#C:\Python39\python.exe -m pip install --update pip
+
+#install list
+pymongo
+pyyaml
+# langchain[llms]
+# langChain X mongodb Atlas
+# transformers
+# torch
+# 2024-01-24 fastAPI // pip install fastapi[all]
+# wikipedia
+fastapi
+# pandasai
+# 2024-04-16 ollama test
+# ollama
+# seaborn
+# scikit-learn
+# 2024-06-29
+# tensorflow
+
+# connect oracle :: python-oracledb/ cx_Oracle
+# cx_Oracle
+
+# use install list :: dev/prod
+# pandas
+# pyyaml
+# pymongo
+# fastapi
+# requests
+uvicorn
