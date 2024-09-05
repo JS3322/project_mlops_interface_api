@@ -2,6 +2,7 @@ pandas
 scikit-learn
 jupyterlab
 numpy
+python-dotenv
 
 #pip install -r requirements.txt
 #C:\Python39\python.exe -m pip install --update pip
