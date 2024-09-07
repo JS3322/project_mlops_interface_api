@@ -1,15 +1,15 @@
 pandas
-scikit-learn
-jupyterlab
-numpy
+# scikit-learn
+# jupyterlab
+# numpy
 python-dotenv
 
 #pip install -r requirements.txt
 #C:\Python39\python.exe -m pip install --update pip
 
-#install list
-pymongo
-pyyaml
+# use mongoDB
+# pymongo
+
 # langchain[llms]
 # langChain X mongodb Atlas
 # transformers
