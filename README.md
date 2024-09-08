@@ -1,5 +1,6 @@
 #### todo
-
+tail -f /var/log/application.log
+strace -p [프로세스 ID] -e trace=write
 ---
 #### TEST case
 ```bash
