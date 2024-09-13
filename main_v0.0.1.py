@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from src.mlops.application import ExecuteExampleApplication
+from src.ml.application import ExecuteExampleApplication
 
 import uvicorn
 

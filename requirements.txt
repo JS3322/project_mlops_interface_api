@@ -1,37 +1,8 @@
+# 데이터 분석
 pandas
-# scikit-learn
-# jupyterlab
-# numpy
+# 환경
 python-dotenv
-
-#pip install -r requirements.txt
-#C:\Python39\python.exe -m pip install --update pip
-
-# use mongoDB
-# pymongo
-
-# langchain[llms]
-# langChain X mongodb Atlas
-# transformers
-# torch
-# 2024-01-24 fastAPI // pip install fastapi[all]
-# wikipedia
+# 웹
 fastapi
-# pandasai
-# 2024-04-16 ollama test
-# ollama
-# seaborn
-# scikit-learn
-# 2024-06-29
-# tensorflow
-
-# connect oracle :: python-oracledb/ cx_Oracle
-# cx_Oracle
-
-# use install list :: dev/prod
-# pandas
-# pyyaml
-# pymongo
-# fastapi
-# requests
 uvicorn
+# 인공지능

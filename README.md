@@ -1,6 +1,9 @@
 #### todo
-tail -f /var/log/application.log
-strace -p [프로세스 ID] -e trace=write
+- 타 터미널에서 로그 확인
+    ```
+    tail -f /var/log/application.log
+    strace -p [프로세스 ID] -e trace=write
+    ```
 ---
 #### TEST case
 ```bash
