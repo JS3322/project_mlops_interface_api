@@ -3,6 +3,7 @@ from src.ml.domain.vo.request_info_vo import RequestInfoVO
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import BackgroundTasks
 import logging
+from src.common.di.example import get_db
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -15,7 +16,7 @@ logger = logging.getLogger("default")
 # db=Depends(get_db)
 # , token: str = Depends(oauth2_scheme)
 @route.post("/example")
-def execute_sample(background_tasks: BackgroundTasks, request_info: RequestInfoVO):
+async def execute_sample(background_tasks: BackgroundTasks, request_info: RequestInfoVO):
     try:
         # 로그에 요청 정보 기록
         logger.info(f"Received request: {request_info}")
