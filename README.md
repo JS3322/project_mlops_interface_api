@@ -6,8 +6,17 @@
     ```
 ---
 #### TEST case
+
+
+
+
+
+```
+source ./.venv/bin/activate
+```
+
 ```bash
-uvicorn main_v0.0.1:app --reload
+uvicorn ./main_v0.0.1:app --reload
 ```
 ```
 http://127.0.0.1:8000/redoc
