@@ -1,0 +1,1 @@
+Notification sent to {'kit_name': 'string1111', 'target_performance': 0.0, 'username': 'string', 'email': 'string', 'description': 'string', 'data_info': {}}
