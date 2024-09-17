@@ -1,7 +1,13 @@
-from fastapi import Depends
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+DATABASE_URL = "postgresql://localhost:5432/testdb"
+
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def get_db():
-    db = "database connection"
+    db = SessionLocal()
     try:
         yield db
     finally:

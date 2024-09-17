@@ -15,7 +15,12 @@
 3. 캐시 미스가 발생하지 않을 경우, 캐시에서 데이터를 가져옴
 ```
 
-
+```
+CREATE TABLE request_info (
+    id SERIAL PRIMARY KEY,
+    data JSONB
+);
+```
 
 ```
 source ./.venv/bin/activate

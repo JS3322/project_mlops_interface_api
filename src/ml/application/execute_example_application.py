@@ -1,4 +1,6 @@
 from fastapi import HTTPException, status, APIRouter, Depends
+
+from src.ml.domain.service.execute_request_info_db import insert_request_info, read_request_info
 from src.ml.domain.vo.request_info_vo import RequestInfoVO
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import BackgroundTasks
@@ -36,3 +38,43 @@ async def execute_sample(background_tasks: BackgroundTasks, request_info: Reques
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e)
         )
+
+@route.post("/example/db")
+async def execute_sample_db(background_tasks: BackgroundTasks, request_info: RequestInfoVO):
+    try:
+        # 로그에 요청 정보 기록
+        logger.info(f"Received request: {request_info}")
+
+        # 요청 정보를 데이터베이스에 저장
+        insert_request_info(request_info)
+
+        return {
+            "result": "success",
+            "data": "test"
+        }
+    except Exception as e:
+        logger.error(f"Error processing request: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
+
+@route.get("/example/db/{item_id}")
+async def read_example_db(item_id: int):
+    try:
+        # 로그에 요청 정보 기록
+        logger.info(f"Received request to read item with ID: {item_id}")
+
+        # 데이터베이스에서 요청 정보 읽기
+        request_info = read_request_info(item_id)
+
+        return {
+            "result": "success",
+            "data": request_info
+        }
+    except Exception as e:
+        logger.error(f"Error processing request: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )   
