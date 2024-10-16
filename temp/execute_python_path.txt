@@ -1,0 +1,19 @@
+이러한 문제에 대한 자세한 설명은 아래 웹사이트에서 확인하실 수 있습니다:
+
+	1.	Python 공식 문서 - 모듈과 패키지
+	•	링크: https://docs.python.org/ko/3/tutorial/modules.html#packages
+	•	Python의 모듈과 패키지 개념, 그리고 임포트 방식에 대해 자세히 설명하고 있습니다.
+	2.	상대적 임포트와 절대적 임포트의 차이
+	•	링크: https://dojang.io/mod/page/view.php?id=2460
+	•	상대적 임포트와 절대적 임포트의 차이점과 사용 방법을 이해하는 데 도움이 됩니다.
+	3.	__name__과 __main__의 의미
+	•	링크: https://wikidocs.net/16069
+	•	Python에서 __name__ 변수와 __main__의 역할에 대해 자세히 설명합니다.
+	4.	Python 모듈 임포트 오류 해결 방법
+	•	링크: https://velog.io/@surim014/파이썬-모듈-ImportError-해결하기
+	•	비슷한 ImportError 문제를 해결한 경험을 공유한 블로그로, 실질적인 해결 방법을 제시합니다.
+	5.	Stack Overflow - Relative imports for the billionth time
+	•	링크: https://stackoverflow.com/questions/14132789/relative-imports-for-the-billionth-time
+	•	많은 개발자들이 겪는 상대적 임포트 문제에 대한 토론과 해결책을 볼 수 있습니다.
+
+이러한 자료들을 참고하시면 현재 겪고 계신 ImportError의 원인과 해결 방법에 대해 더 깊이 이해하실 수 있을 것입니다. 특히, 스크립트 실행 방식에 따른 __name__ 변수의 변화와 상대적 임포트의 한계에 대해 자세히 알아보시면 문제 해결에 큰 도움이 될 것입니다.
