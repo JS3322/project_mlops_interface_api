@@ -8,3 +8,4 @@ uvicorn==0.30.6
 # 인공지능
 SQLAlchemy==2.0.35
 psycopg2-binary==2.9.9
+psutil

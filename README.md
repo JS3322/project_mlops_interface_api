@@ -1,4 +1,7 @@
 #### todo
+
+
+
 - 타 터미널에서 로그 확인
     ```
     uvicorn main:app --reload > fastapi.log 2>&1 &
