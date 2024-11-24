@@ -11,6 +11,7 @@ import subprocess
 import time
 import threading
 import psutil
+import sys
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -22,6 +23,21 @@ route = APIRouter()
 logger = logging.getLogger("default")
 # db=Depends(get_db)
 # , token: str = Depends(oauth2_scheme)
+
+log_file_path = "/Users/js/cleancode/project_mlops_interface/log.log"
+
+logger.setLevel(logging.INFO)
+
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+file_handler = logging.FileHandler(log_file_path)
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(formatter)
+stream_handler = logging.StreamHandler(sys.stdout)
+stream_handler.setLevel(logging.INFO)
+stream_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
+logger.addHandler(stream_handler)
 
 running_processes = []
 process_lock = threading.Lock()
@@ -190,4 +206,29 @@ async def read_example_db(item_id: int):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e)
-        )   
+        )
+
+@route.get("/subprocess")
+async def run_subprocess():
+    try:
+        # subprocess로 실행할 Python 파일 (예: "child_script.py")
+        script_path = "./child_script.py"
+
+        # subprocess 실행 및 출력 캡처
+        result = subprocess.run(
+            ["python3", script_path],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        # 표준 출력 및 표준 에러를 로거에 저장
+        if result.stdout:
+            logger.info(f"Subprocess STDOUT: {result.stdout.strip()}")
+        if result.stderr:
+            logger.error(f"Subprocess STDERR: {result.stderr.strip()}")
+
+        return {"message": "Subprocess executed successfully.", "output": result.stdout.strip()}
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Subprocess failed with error: {e.stderr.strip()}")
+        return {"message": "Subprocess execution failed.", "error": e.stderr.strip()}
