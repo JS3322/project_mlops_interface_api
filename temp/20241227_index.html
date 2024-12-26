@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}VO 기반 테이블{% endblock %}
+
+{% block content %}
+<div class="glass-container">
+  <button class="refresh-btn" id="refreshBtn">새로고침</button>
+  
+  <h1>데이터 테이블</h1>
+  <p>아래 테이블은 “새로고침” 버튼을 클릭할 때마다 비동기로 업데이트됩니다.</p>
+  
+  <table id="myTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      {# 서버 사이드 렌더링(초기 화면) #}
+      {% for item in table_data %}
+      <tr>
+        <td>{{ item.id }}</td>
+        <td>{{ item.value }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // 새로고침 버튼 클릭 시 /api/data 재호출하여 테이블 갱신
+  document.getElementById('refreshBtn').addEventListener('click', async () => {
+    try {
+      const response = await fetch('/api/data');
+      if (!response.ok) {
+        throw new Error('서버 응답이 올바르지 않습니다: ' + response.status);
+      }
+      const data = await response.json();
+
+      // 테이블 본문을 비우고 새로 채움
+      const tbody = document.querySelector('#myTable tbody');
+      tbody.innerHTML = '';
+
+      data.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.id}</td>
+          <td>${item.value}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    } catch (error) {
+      console.error('데이터 가져오기 에러:', error);
+    }
+  });
+</script>
+{% endblock %}
