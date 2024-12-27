@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}모델 리스트{% endblock %}
+
+{% block content %}
+<div class="glass-container">
+  <h1>모델 리스트</h1>
+  <p>“Activate + Deactivate” 버튼 너비가 일정하게 유지되며, 새로고침 버튼도 정상 클릭이 가능합니다.</p>
+
+  <table id="myTable">
+    <thead>
+      <tr>
+        <th>Model Name</th>
+        <th>Activated</th>
+        <th>Last Execution Time</th>
+        <th>PID</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in table_data %}
+      <tr data-pid="{{ item.pid }}" class="{% if item.model_activation %}activated{% endif %}">
+        <td>{{ item.model_name }}</td>
+        <td>{{ item.model_activation }}</td>
+        <td>{{ item.last_execution_time }}</td>
+        <td>{{ item.pid }}</td>
+        <td>{{ item.description }}</td>
+        <td>
+          <div class="btn-wrapper {% if item.model_activation %}activated{% endif %}">
+            <button class="activate-btn">Activate</button>
+            <button class="deactivate-btn">Deactivate</button>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // 1) 새로고침 버튼 -> /api/data GET -> 테이블 다시 로딩
+  document.getElementById('refreshBtn').addEventListener('click', fetchTableData);
+
+  async function fetchTableData() {
+    try {
+      const response = await fetch('/api/data');
+      if (!response.ok) {
+        throw new Error('서버 응답이 올바르지 않습니다: ' + response.status);
+      }
+      const data = await response.json();
+      renderTable(data);
+    } catch (error) {
+      console.error('데이터 갱신 에러:', error);
+    }
+  }
+
+  function renderTable(data) {
+    const tbody = document.querySelector('#myTable tbody');
+    tbody.innerHTML = '';
+
+    data.forEach(item => {
+      const tr = document.createElement('tr');
+      tr.dataset.pid = item.pid;
+      if(item.model_activation) {
+        tr.classList.add('activated');
+      }
+
+      tr.innerHTML = `
+        <td>${item.model_name}</td>
+        <td>${item.model_activation}</td>
+        <td>${item.last_execution_time}</td>
+        <td>${item.pid}</td>
+        <td>${item.description || ''}</td>
+        <td>
+          <div class="btn-wrapper ${item.model_activation ? 'activated' : ''}">
+            <button class="activate-btn">Activate</button>
+            <button class="deactivate-btn">Deactivate</button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // 2) 테이블 내 버튼 클릭 (Activate / Deactivate)
+  document.addEventListener('click', async (e) => {
+    // Activate
+    if(e.target.classList.contains('activate-btn')) {
+      const row = e.target.closest('tr');
+      const pid = row.getAttribute('data-pid');
+      try {
+        const res = await fetch(`/api/activate/${pid}`, { method: 'POST' });
+        if(!res.ok) throw new Error('Activate 오류');
+        row.cells[1].innerText = 'true';
+        row.classList.add('activated');
+        row.querySelector('.btn-wrapper').classList.add('activated');
+      } catch (err) {
+        console.error('Activate 에러:', err);
+      }
+    }
+
+    // Deactivate
+    if(e.target.classList.contains('deactivate-btn')) {
+      const row = e.target.closest('tr');
+      const pid = row.getAttribute('data-pid');
+      try {
+        const res = await fetch(`/api/deactivate/${pid}`, { method: 'POST' });
+        if(!res.ok) throw new Error('Deactivate 오류');
+        row.cells[1].innerText = 'false';
+        row.classList.remove('activated');
+        row.querySelector('.btn-wrapper').classList.remove('activated');
+      } catch (err) {
+        console.error('Deactivate 에러:', err);
+      }
+    }
+  });
+</script>
+{% endblock %}
