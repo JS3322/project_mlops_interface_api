@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}모델 리스트{% endblock %}
+
+{% block content %}
+<div class="glass-container">
+  <h1>모델 리스트</h1>
+  <p>
+    - “Activate” 버튼만 있을 때와 “Activate + Deactivate” 버튼 있을 때의 총 너비가 동일합니다.  
+    - Deactivate 버튼은 활성화된(Row)에서만 나타나며, 클릭 시 비활성화로 전환합니다.
+  </p>
+
+  <table id="myTable">
+    <thead>
+      <tr>
+        <th>Model Name</th>
+        <th>Activated</th>
+        <th>Last Execution Time</th>
+        <th>PID</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {# 서버 사이드 렌더링 (초기화면) #}
+      {% for item in table_data %}
+      <tr 
+        data-pid="{{ item.pid }}" 
+        class="{% if item.model_activation %}activated{% endif %}"
+      >
+        <td>{{ item.model_name }}</td>
+        <td>{{ item.model_activation }}</td>
+        <td>{{ item.last_execution_time }}</td>
+        <td>{{ item.pid }}</td>
+        <td>{{ item.description }}</td>
+        <td>
+          <div class="btn-wrapper {% if item.model_activation %}activated{% endif %}">
+            <!-- Activate 버튼 -->
+            <button class="activate-btn">Activate</button>
+            <!-- Deactivate 버튼 -->
+            <button class="deactivate-btn">Deactivate</button>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // 새로고침 버튼 -> /api/data 다시 GET -> 테이블 재랜더링
+  document.getElementById('refreshBtn').addEventListener('click', fetchTableData);
+
+  // 테이블 데이터 fetch -> 테이블 재구성
+  async function fetchTableData() {
+    try {
+      const response = await fetch('/api/data');
+      if (!response.ok) {
+        throw new Error('서버 응답이 올바르지 않습니다: ' + response.status);
+      }
+      const data = await response.json();
+      renderTable(data);
+    } catch (error) {
+      console.error('데이터 갱신 에러:', error);
+    }
+  }
+
+  // 테이블 렌더링 함수
+  function renderTable(data) {
+    const tbody = document.querySelector('#myTable tbody');
+    tbody.innerHTML = '';
+
+    data.forEach(item => {
+      // 행 생성
+      const tr = document.createElement('tr');
+      tr.setAttribute('data-pid', item.pid);
+      if(item.model_activation) {
+        tr.classList.add('activated');
+      }
+
+      tr.innerHTML = `
+        <td>${item.model_name}</td>
+        <td>${item.model_activation}</td>
+        <td>${item.last_execution_time}</td>
+        <td>${item.pid}</td>
+        <td>${item.description || ''}</td>
+        <td>
+          <div class="btn-wrapper ${item.model_activation ? 'activated' : ''}">
+            <button class="activate-btn">Activate</button>
+            <button class="deactivate-btn">Deactivate</button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // 테이블 내 클릭 이벤트: Activate / Deactivate 구분
+  document.addEventListener('click', async (e) => {
+    // Activate
+    if(e.target.classList.contains('activate-btn')) {
+      const row = e.target.closest('tr');
+      const pid = row.getAttribute('data-pid');
+      try {
+        const res = await fetch(`/api/activate/${pid}`, { method: 'POST' });
+        if(!res.ok) throw new Error('Activate 오류');
+        // 모델 활성화 성공 => row 업데이트
+        row.cells[1].innerText = 'true';
+        row.classList.add('activated');
+        // 버튼 래퍼에 activated 클래스 추가
+        const wrapper = row.querySelector('.btn-wrapper');
+        wrapper.classList.add('activated');
+      } catch (err) {
+        console.error('Activate 에러:', err);
+      }
+    }
+    // Deactivate
+    if(e.target.classList.contains('deactivate-btn')) {
+      const row = e.target.closest('tr');
+      const pid = row.getAttribute('data-pid');
+      try {
+        const res = await fetch(`/api/deactivate/${pid}`, { method: 'POST' });
+        if(!res.ok) throw new Error('Deactivate 오류');
+        // 모델 비활성화 성공 => row 업데이트
+        row.cells[1].innerText = 'false';
+        row.classList.remove('activated');
+        // 버튼 래퍼에서 activated 클래스 제거
+        const wrapper = row.querySelector('.btn-wrapper');
+        wrapper.classList.remove('activated');
+      } catch (err) {
+        console.error('Deactivate 에러:', err);
+      }
+    }
+  });
+</script>
+{% endblock %}
