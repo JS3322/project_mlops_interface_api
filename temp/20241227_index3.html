@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}모델 리스트{% endblock %}
+
+{% block content %}
+<div class="glass-container">
+  <h1>모델 리스트</h1>
+  <p>모델 정보를 표시하고, 모델 활성화(Activate) 버튼을 통해 model_activation 값을 true로 변경합니다.</p>
+
+  <table id="myTable">
+    <thead>
+      <tr>
+        <th>Model Name</th>
+        <th>Activated</th>
+        <th>Last Execution Time</th>
+        <th>PID</th>
+        <th>Description</th>
+        <th>Activate</th>
+      </tr>
+    </thead>
+    <tbody>
+      {# 서버 사이드 렌더링으로 초기 테이블 표출 #}
+      {% for item in table_data %}
+      <tr 
+          data-pid="{{ item.pid }}"
+          class="{% if item.model_activation %}activated{% endif %}"
+      >
+        <td>{{ item.model_name }}</td>
+        <td>{{ item.model_activation }}</td>
+        <td>{{ item.last_execution_time }}</td>
+        <td>{{ item.pid }}</td>
+        <td>{{ item.description }}</td>
+        <td>
+          <button class="activate-btn">Activate</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // (1) "Activate" 버튼 클릭 시 => /api/activate/:pid 에 POST 요청
+  // (2) 성공하면 해당 row의 model_activation 값이 True 로 변경,
+  //     그리고 행에 "activated" 클래스를 추가하여 배경 깜빡임 적용
+  document.addEventListener("DOMContentLoaded", () => {
+    const table = document.getElementById('myTable');
+
+    table.addEventListener('click', async (e) => {
+      if(e.target.classList.contains('activate-btn')) {
+        // 클릭된 버튼의 부모 <tr> 찾아서 PID 추출
+        const row = e.target.closest('tr');
+        const pid = row.getAttribute('data-pid');
+
+        // 활성화 API 호출
+        try {
+          const response = await fetch(`/api/activate/${pid}`, {
+            method: 'POST'
+          });
+          if (!response.ok) {
+            throw new Error('서버 응답이 올바르지 않습니다: ' + response.status);
+          }
+          
+          // 응답이 200 OK 라면, 해당 행을 깜빡이도록 업데이트
+          // 1) model_activation 세트 => True 로 표시
+          row.cells[1].innerText = 'true';
+          // 2) tr에 class "activated" 추가
+          row.classList.add('activated');
+
+        } catch (error) {
+          console.error('모델 활성화 에러:', error);
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}
