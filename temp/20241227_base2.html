@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}{% endblock %}</title>
+  <style>
+    /* 기본 리셋 및 공통 스타일 */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      /* 외부 이미지 없이, CSS 그라디언트 배경 */
+      background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%) fixed;
+    }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    /* 반투명(글라스) 스타일 컨테이너 */
+    .glass-container {
+      background-color: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      color: #fff; 
+      position: relative;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    /* 새로고침 버튼 (오른쪽 상단) */
+    .refresh-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(255, 255, 255, 0.3);
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.2s ease;
+    }
+    .refresh-btn:hover {
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* 테이블 스타일 */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+    th, td {
+      text-align: left;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    th {
+      background-color: rgba(255, 255, 255, 0.2);
+      font-weight: bold;
+    }
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>
