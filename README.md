@@ -1,4 +1,64 @@
-#### todo
+#### solution monitoring
+
+## 구조
+- Client -> Nginx(80/443) -> Gunicorn(8000) -> FastAPI
+
+---
+## debug
+
+---
+## deploy
+
+- nginx conf
+```
+   server {
+       listen 80;  # HTTP 포트
+       server_name your-domain.com;  # 도메인 또는 IP 주소
+
+       # 로그 파일 위치
+       access_log /path/to/nginx/logs/access.log;
+       error_log /path/to/nginx/logs/error.log;
+
+       # FastAPI 애플리케이션으로 프록시
+       location / {
+           proxy_pass http://127.0.0.1:8000;  # FastAPI가 실행되는 주소
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection 'upgrade';
+           proxy_set_header Host $host;
+           proxy_cache_bypass $http_upgrade;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+       }
+
+       # 정적 파일 서빙 (필요한 경우)
+       location /static/ {
+           alias /path/to/your/project/static/;
+           expires 30d;
+           add_header Cache-Control "public, no-transform";
+       }
+
+       # 에러 페이지 설정
+       error_page 500 502 503 504 /50x.html;
+       location = /50x.html {
+           root /usr/share/nginx/html;
+       }
+   }
+```
+
+- supervisor
+```
+   [program:fastapi]
+   command=/path/to/your/project/.venv/bin/gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 127.0.0.1:8000
+   directory=/path/to/your/project
+   user=your-user
+   autostart=true
+   autorestart=true
+   stderr_logfile=/var/log/supervisor/fastapi.err.log
+   stdout_logfile=/var/log/supervisor/fastapi.out.log
+   environment=PYTHONPATH="/path/to/your/project"
+```
 
 
 
