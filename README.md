@@ -3,6 +3,26 @@
 ## 구조
 - Client -> Nginx(80/443) -> Gunicorn(8000) -> FastAPI
 
+## flow
+
+```mermaid
+flowchart TD
+    Server("Ubuntu 클라우드 서버 준비 ☁️") --> Update("패키지 업데이트 및 필수 도구 설치 🛠️")
+    Update --> Python("Python 및 가상환경 설정 🐍") & Node("Node.js 설치 및 프론트 빌드 환경 구성 🌐")
+    Python --> FastAPI("FastAPI 백엔드 구성 🚀")
+    Node --> Vue("Vue3 앱 빌드 및 정적 파일 생성 🖼️") & n1["Untitled Node"]
+    FastAPI --> Uvicorn("Uvicorn 또는 Gunicorn으로 서버 실행 🔧")
+    Vue --> Nginx("Nginx 설정 및 리버스 프록시 구성 🌐")
+    AI("AI 모델 개발 및 통합 🤖") --> FastAPI
+    Uvicorn --> Nginx
+    Nginx --> PM2("PM2 또는 Supervisor로 프로세스 관리 ⚙️")
+    PM2 --> SSL@{ label: "Let's Encrypt로 SSL 인증서 적용 🔒" }
+    SSL --> UFW("UFW 방화벽 설정 및 포트 오픈 🔐")
+    UFW --> Domain("도메인 연결 및 테스트 🌍")
+
+    SSL@{ shape: rounded}
+```
+
 ---
 ## debug
 
